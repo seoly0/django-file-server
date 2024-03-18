@@ -25,13 +25,17 @@ const handleOnClickBtnDownloadByChunk = () => {
     const chunkSize = 1024 * 1024 * 100 // 100MB
 
     const download = async (start, end) => {
-      const res = await fetch('/api/downloader/download/chunk', {
-        headers: {
-          Range: `bytes=${start}-${end}`,
-        },
-      })
-      const blob = await res.blob()
-      return blob
+      try {
+        const res = await fetch('/api/downloader/download/chunk', {
+          headers: {
+            Range: `bytes=${start}-${end}`,
+          },
+        })
+        const blob = await res.blob()
+        return blob
+      } catch (e) {
+        return await download(start, end)
+      }
     }
 
     const metadata = await fetch('/api/downloader/download/metadata')
